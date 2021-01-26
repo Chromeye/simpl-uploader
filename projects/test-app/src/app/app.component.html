@@ -1,0 +1,42 @@
+<header>
+  <h1>Testing the uploader</h1>
+  <h4>Drop contents below</h4>
+</header>
+
+<div
+  class="upload-container"
+  streameyeSimplUploader
+  [validators]="validators"
+  (files)="allFiles = $event"
+  (completeProgress)="totalProgress = $event"
+  (isUploading)="isUploading = $event"
+>
+  <span class="material-icons"> publish </span>
+  <span>drop here</span>
+</div>
+<div class="upload-status">
+  <ul>
+    <li
+      *ngFor="let file of allFiles | async; let i = index"
+      class="file-progress"
+    >
+      {{ file.fileName }}
+      <div *ngIf="file.progress | async as progress">
+        <div
+          class="file-progress-bar"
+          [style.width.%]="progress"
+          [style.opacity]="((i + 1) * 7) / 100"
+        ></div>
+      </div>
+      <div *ngIf="file.errors"><span class="upload-error">Errors occured: {{ file.errors.join(',') }}</span></div>
+    </li>
+  </ul>
+  <div class="total-progress">
+    Total: {{ getTotalProgressFormatted(totalProgress | async) }}%
+    <span class="loader" [class.active]="isUploading"></span>
+    <div
+      class="total-progress-bar"
+      [style.width.%]="getTotalProgressFormatted(totalProgress | async)"
+    ></div>
+  </div>
+</div>

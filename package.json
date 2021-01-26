@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -20,7 +21,8 @@
     "@angular/router": "~11.0.5",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "@streameye/simpl-uploader": "0.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1100.7",

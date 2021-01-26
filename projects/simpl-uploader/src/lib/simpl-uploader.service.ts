@@ -11,7 +11,7 @@ export class SimplUploaderService {
 
   constructor(private http: HttpClient) { }
 
-  public upload(files: Set<File>, validators: UploadValidator[]): UploadStatus[] {
+  public upload(files: Set<File>, validators: UploadValidator[] = []): UploadStatus[] {
     const status: UploadStatus[] = [];
 
     files.forEach(file => {
@@ -30,7 +30,7 @@ export class SimplUploaderService {
           if (event && event.type === HttpEventType.UploadProgress) {
             if (event.total) {
               const percentDone = Math.round(100 * event.loaded / event.total);
-              progress.next(percentDone)
+              progress.next(percentDone);
             }
           } else if (event instanceof HttpResponse) {
             progress.complete()

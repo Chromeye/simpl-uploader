@@ -21,14 +21,15 @@ import {
 // }
 
 @Directive({
-  selector: '[streameyeSimplUploader]',
+  selector: '[seSimplUploader], [streameyeSimplUploader]',
   providers: [SimplUploaderService]
 })
-export class SimplUploaderDirective implements OnInit, OnDestroy {
+export class SimplUploaderDirective implements OnInit {
 
   // expose two streams - one to show the files - each with its progress, the second to show total progress
   @Output() files: EventEmitter<Observable<UploadStatus[]>> = new EventEmitter();
   @Output() completeProgress: EventEmitter<Observable<number>> = new EventEmitter();
+  @Output() isUploading: EventEmitter<boolean> = new EventEmitter();
   // get an array of validators
   @Input() validators: UploadValidator[] = [];
 
@@ -42,7 +43,6 @@ export class SimplUploaderDirective implements OnInit, OnDestroy {
 
   // handle the drop
   @HostListener('drop', ['$event']) onDrop(event: DragEvent) {
-    console.log('drop');
     if (this._disabled || !event.dataTransfer) {
       return;
     }
@@ -70,9 +70,7 @@ export class SimplUploaderDirective implements OnInit, OnDestroy {
     this.files.emit(this.addedFiles$);
     this.completeProgress.emit(progress);
   }
-  ngOnDestroy() {
-
-  }
+ 
   // When new files are added concatenate them to the current in progress and emit
   // the new array as event in the files stream
   get addedFiles$(): Observable<UploadStatus[]> {
@@ -86,6 +84,7 @@ export class SimplUploaderDirective implements OnInit, OnDestroy {
     const uploads = this.simplUploaderService.upload(
       new Set(Array.from(files)), this.validators
     );
+    this.isUploading.emit(true);
     this.addedFiles.next(uploads);
   }
   // logic for the total progress calculation
@@ -163,7 +162,8 @@ export class SimplUploaderDirective implements OnInit, OnDestroy {
               map(progress => {
                 return { progress, fileName: upload.fileName, fileSize: upload.fileSize }
               }),
-              // IMPORTANT - only emit this stream IF progress is 100 - i.e. file is uploaded
+              // IMPORTANT - only emit this stream IF progress is 100 - i.e. file is uploaded. 
+              // Extend this to emit on progress change?
               filter(upl => upl.progress === 100),
               // this is just as a safety to only take single emission and finalise the stream
               take(1)
@@ -192,8 +192,8 @@ export class SimplUploaderDirective implements OnInit, OnDestroy {
     const combine = combineLatest([this.totalWeight, this.finishedWeight]).pipe(
 
       map(([total, finished]) => {
-        // console.log(total, finished); Oh well this is obvious - report the total in % :)
-        return (total.kb > 0 ? Math.round(finished.kb / total.kb * 100) : 0)
+        //report the total in % :) or -1 if total.kb is 0 - means all files returned errors
+        return (total.kb > 0 ? Math.round(finished.kb / total.kb * 100) : -1)
       }),
       startWith(0)
     )
@@ -203,15 +203,16 @@ export class SimplUploaderDirective implements OnInit, OnDestroy {
       // the below delay(0) is a trick to emit at the end of the call stack so that the 100 value is reported.
       // else the chain of events is broken before we emit 100% total IF there are uploads, i.e. files with no errors.
       delay(0),
-      filter(combined => combined === 100),
+      filter(combined => combined === 100 || combined === -1),
+      //
       // switch to clearing the addedFiles and emitting just an []. Here it doesnt matter what we emit, we just need an
       // emission so that takeUntil fires and closes the observables.
       switchMap(() => {
+        this.isUploading.emit(false); // emit side effect to control potential in progress icon
         this.addedFiles.next([]);
         return of([])
       })
     )
-    // 
     return percProgress;
   }
   private preventDefault(event: MouseEvent) {
