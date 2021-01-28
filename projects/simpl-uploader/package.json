@@ -8,7 +8,7 @@
   "dependencies": {
     "tslib": "^2.0.0"
   },
-  "description": "This library provides a simple uploader function. Coupled with node.js server, the library's directive takes dropped files and exposes 2 streams as outputs. One for files dropped and their progress and one for total progress",
+  "description": "This library provides a simple uploader function imlemented in RxJS. Coupled with node.js server, the library's directive takes dropped files and exposes 2 streams as outputs. One for files dropped and their progress and one for total progress",
   "main": "public-api.js",
   "scripts": {
     "test": "npm run test"
@@ -19,12 +19,17 @@
     "validation",
     "file",
     "stream",
+    "RxJS",
     "progress",
     "stream",
     "upload",
     "drag-n-drop",
     "files"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chromeye/simpl-uploader"
+  },
   "author": "Nick Dimitrov",
   "license": "ISC"
 }
