@@ -1,27 +1,24 @@
 # SimplUploader
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.9.
 
-## Development server
+## The purpose
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+The purpose of the library is to provide a very simple interface for reporting upload progress when uploading files to a server. It is based on RxJS streams and is quite extensible. It is also a learn while doing project :) inspired by some marvelous RxJS tutorials on Egghead.
 
-## Code scaffolding
+It is currently being used internally in our platform. The plan is to extend the library for public use by adding few more features, but to keep it significantly lighter and simpler than other libraries doing the same.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Contributions and ideas are very welcome!
 
-## Build
+## The plan
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+There are few things planned to be added in near future
+- Documentation and examples,
+- Click to upload, instead of only drag-n-drop,
+- Continuous total progress report, instead of on completed upload,
+- JWT token authentication for use with servers that are public.
+- Unit tests?
 
-## Running unit tests
+## Whats inside
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+GIT repo contains the library as well as a testing app showcasing the current features *(to be documented)*. There is also a very simple node backend to test the uploads. After `npm i` in the `/backend` folder, just run `node server.js` to start the server on port 9999.
